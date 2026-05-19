@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Mastery — Bilal Ahmad Niazi</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c12;
+    --bg2: #10131d;
+    --bg3: #161a28;
+    --accent: #00ffc2;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --card: #12151f;
+    --glow: 0 0 40px rgba(0,255,194,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID NOISE BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,194,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,194,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 280px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+  }
+
+  .sidebar-logo .dev-tag {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .sidebar-logo .dev-tag span { color: var(--accent3); }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+
+  .nav-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 12px 24px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 13.5px;
+    font-weight: 400;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: rgba(0,255,194,0.05);
+    border-left-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .nav-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    min-width: 20px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: 280px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 64px 64px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'C++';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 240px;
+    font-weight: 900;
+    color: rgba(0,255,194,0.03);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,194,0.08);
+    border: 1px solid rgba(0,255,194,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.7s ease 0.1s both;
+  }
+
+  .hero h2 span { color: var(--accent); }
+
+  .hero h2 .name-line {
+    display: block;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.7;
+    animation: fadeInUp 0.7s ease 0.2s both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 36px;
+    animation: fadeInUp 0.7s ease 0.3s both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LECTURE CONTENT ── */
+    padding-top: 64px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(0,255,194,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,255,194,0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── LECTURE CARD ── */
+  .lecture-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .lecture-card:hover {
+    border-color: rgba(0,255,194,0.2);
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: rgba(0,255,194,0.08);
+    border: 1px solid rgba(0,255,194,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .card-meta { flex: 1; }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    margin-bottom: 3px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .card-toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.3s, color 0.2s;
+  }
+
+  .lecture-card.open .card-toggle {
+    transform: rotate(45deg);
+    color: var(--accent);
+  }
+
+  .card-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .lecture-card.open .card-body { display: block; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #080a10;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .code-block .lang-tag {
+    position: absolute;
+    top: 10px; right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #cdd6f4;
+    white-space: pre;
+  }
+
+  /* Syntax colors */
+  .kw { color: #cba6f7; font-weight: 600; }   /* keywords */
+  .fn { color: #89dceb; }                       /* functions */
+  .str { color: #a6e3a1; }                      /* strings */
+  .cmt { color: #585b70; font-style: italic; }  /* comments */
+  .num { color: #fab387; }                      /* numbers */
+  .tp { color: #f38ba8; }                       /* types */
+  .op { color: #94e2d5; }                       /* operators */
+  .inc { color: #f9e2af; }                      /* includes */
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #94a3b8;
+    margin-bottom: 12px;
+  }
+
+  .explanation strong { color: var(--accent); font-weight: 500; }
+
+  .tip-box {
+    background: rgba(245,158,11,0.07);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-left: 3px solid var(--accent3);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #d4a056;
+    margin-top: 12px;
+  }
+
+  .tip-box strong { color: var(--accent3); }
+
+  .output-box {
+    background: #06080f;
+    border: 1px solid rgba(0,255,194,0.12);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  .output-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .concept-chip {
+    background: rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #c4b5fd;
+  }
+
+  .concept-chip .chip-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 3px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .footer-left span { color: var(--accent); }
+
+  .footer-right {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── STUDENT CARD ── */
+  .student-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    background: rgba(0,255,194,0.05);
+    border: 1px solid rgba(0,255,194,0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .student-avatar {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 800;
+    color: #000;
+    flex-shrink: 0;
+  }
+  .student-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.3;
+  }
+  .student-meta {
+    font-size: 10px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  /* ── LAYOUT WITH RIGHT PANEL ── */
+  .content-wrapper {
+    display: flex;
+    gap: 0;
+  }
+
+  .content-area {
+    flex: 1;
+    min-width: 0;
+    padding: 0 48px 80px;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    width: 280px;
+    flex-shrink: 0;
+    padding: 32px 20px 32px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-left: 1px solid var(--border);
+  }
+
+  .panel-section { margin-bottom: 28px; }
+
+  .panel-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 16px;
+  }
+
+  /* Core Topics */
+  .core-topic {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+    color: #94a3b8;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .core-topic .ct-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent2);
+    flex-shrink: 0;
+  }
+  .core-topic.done .ct-dot { background: var(--accent); }
+  .core-topic.done { color: var(--accent); background: rgba(0,255,194,0.04); border-color: rgba(0,255,194,0.1); }
+
+  /* Read Topic checkboxes */
+  .read-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 12.5px;
+    color: #94a3b8;
+    user-select: none;
+  }
+  .read-item:hover { background: rgba(255,255,255,0.03); }
+  .read-item input[type="checkbox"] { display: none; }
+  .read-cb {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 10px;
+  }
+  .read-item.checked .read-cb {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 800;
+  }
+  .read-item.checked span { text-decoration: line-through; color: var(--muted); }
+
+  /* Exam Checklist */
+  .exam-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: #94a3b8;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .exam-item:hover { background: rgba(255,255,255,0.03); }
+  .exam-cb {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    border: 1.5px solid #f59e0b55;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    transition: all 0.2s;
+  }
+  .exam-item.checked .exam-cb {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: #000;
+    font-weight: 800;
+  }
+  .exam-item.checked span { color: var(--muted); text-decoration: line-through; }
+
+  /* Progress bar */
+  .progress-section { padding: 0 12px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .progress-label span:last-child { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+  .progress-bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.4s ease;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #1e2235; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2f47; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1200px) {
+    .right-panel { width: 240px; }
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { width: 240px; }
+    .main { margin-left: 240px; }
+    .hero { padding: 48px 32px 40px; }
+    .hero h2 { font-size: 36px; }
+    .content-area { padding: 0 24px 60px; }
+    .footer { padding: 24px 32px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .right-panel { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero { padding: 36px 20px; }
+    .content-area { padding: 0 20px 48px; }
+    .footer { padding: 20px; flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">C++ Lectures</div>
+    <h1>Complete Course</h1>
+    <div class="student-card">
+      <div class="student-avatar">BN</div>
+      <div class="student-info">
+        <div class="student-name">Bilal Ahmad Niazi</div>
+        <div class="student-meta">CS Student · IIUI</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-title">Fundamentals</div>
+    <a class="nav-item active" href="#intro">
+      <span class="num">01</span> Introduction to C++
+    </a>
+    <a class="nav-item" href="#structure">
+      <span class="num">02</span> Program Structure
+    </a>
+    <a class="nav-item" href="#variables">
+      <span class="num">03</span> Variables & Data Types
+    </a>
+    <a class="nav-item" href="#io">
+      <span class="num">04</span> Input & Output
+    </a>
+    <a class="nav-item" href="#operators">
+      <span class="num">05</span> Operators
+    </a>
+
+    <div class="nav-section-title">Control Flow</div>
+    <a class="nav-item" href="#conditions">
+      <span class="num">06</span> Conditions (if/else)
+    </a>
+    <a class="nav-item" href="#switch">
+      <span class="num">07</span> Switch Statement
+    </a>
+    <a class="nav-item" href="#loops">
+      <span class="num">08</span> Loops
+    </a>
+
+    <div class="nav-section-title">Advanced</div>
+    <a class="nav-item" href="#functions">
+      <span class="num">09</span> Functions
+    </a>
+    <a class="nav-item" href="#arrays">
+      <span class="num">10</span> Arrays
+    </a>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Learn C++ PF — Programming Fundamentals</div>
+    <h2>Learn <span>C++</span> PF<span class="name-line">Bilal Ahmad Niazi</span></h2>
+    <p>A structured, beginner-friendly course covering C++ from your very first program all the way through arrays. Clear explanations, working code, real examples.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">10</div>
+        <div class="stat-label">Lectures</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Code Examples</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0→∞</div>
+        <div class="stat-label">Skill Level</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-wrapper">
+  <div class="content-area">
+
+    <!-- ══ SECTION: FUNDAMENTALS ══ -->
+
+    <!-- 01: Introduction -->
+    <div class="lecture-section" id="intro">
+      <div class="section-header">
+        <span class="section-num">LECTURE 01</span>
+        <h2>Introduction to C++</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card open">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">💡</div>
+          <div class="card-meta">
+            <div class="card-title">What is C++?</div>
+            <div class="card-desc">History, purpose, and why learn it</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">
+            <strong>C++</strong> is a powerful, general-purpose programming language created by <strong>Bjarne Stroustrup</strong> in 1979 as an extension of C. It supports both <strong>procedural</strong> and <strong>object-oriented</strong> programming, making it one of the most versatile languages ever created.
+          </p>
+          <p class="explanation">C++ is used in: game engines, operating systems, browsers, embedded systems, and competitive programming. Knowing C++ gives you a deep understanding of how computers actually work.</p>
+          <div class="concept-grid">
+            <div class="concept-chip"><div class="chip-label">Paradigm</div>Multi-paradigm (OOP + Procedural)</div>
+            <div class="concept-chip"><div class="chip-label">Speed</div>Compiled — extremely fast</div>
+            <div class="concept-chip"><div class="chip-label">Created by</div>Bjarne Stroustrup, 1979</div>
+            <div class="concept-chip"><div class="chip-label">Extension of</div>C Language</div>
+          </div>
+          <div class="tip-box"><strong>💡 Tip:</strong> C++ gives you control over memory. This power means more responsibility — but also more performance.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02: Program Structure -->
+    <div class="lecture-section" id="structure">
+      <div class="section-header">
+        <span class="section-num">LECTURE 02</span>
+        <h2>Program Structure</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card open">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🏗️</div>
+          <div class="card-meta">
+            <div class="card-title">Anatomy of a C++ Program</div>
+            <div class="card-desc">Headers, main(), and return statements</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">Every C++ program has a specific structure. Let's break down the simplest possible program — the famous "Hello, World!"</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>    <span class="cmt">// Include standard I/O library</span>
+<span class="kw">using namespace</span> std;    <span class="cmt">// Use standard namespace</span>
+
+<span class="tp">int</span> <span class="fn">main</span>() {           <span class="cmt">// Entry point of every C++ program</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Hello, World!"</span> <span class="op">&lt;&lt;</span> endl;
+
+    <span class="kw">return</span> <span class="num">0</span>;           <span class="cmt">// 0 means success</span>
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">Hello, World!</div>
+          <p class="explanation" style="margin-top:16px">
+            <strong>#include &lt;iostream&gt;</strong> — Brings in the library for input/output.<br>
+            <strong>using namespace std;</strong> — Lets us write <code>cout</code> instead of <code>std::cout</code>.<br>
+            <strong>int main()</strong> — The function where execution begins.<br>
+            <strong>return 0;</strong> — Signals the OS that the program ran successfully.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03: Variables & Data Types -->
+    <div class="lecture-section" id="variables">
+      <div class="section-header">
+        <span class="section-num">LECTURE 03</span>
+        <h2>Variables & Data Types</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">📦</div>
+          <div class="card-meta">
+            <div class="card-title">Declaring Variables</div>
+            <div class="card-desc">int, float, double, char, bool, string</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">A <strong>variable</strong> is a named container that stores data. In C++, you must specify the <strong>data type</strong> before the variable name.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="inc">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span>    age     <span class="op">=</span> <span class="num">21</span>;          <span class="cmt">// whole number</span>
+    <span class="tp">float</span>  gpa     <span class="op">=</span> <span class="num">3.75f</span>;       <span class="cmt">// decimal (4 bytes)</span>
+    <span class="tp">double</span> salary  <span class="op">=</span> <span class="num">85000.50</span>;   <span class="cmt">// decimal (8 bytes, more precise)</span>
+    <span class="tp">char</span>   grade   <span class="op">=</span> <span class="str">'A'</span>;         <span class="cmt">// single character</span>
+    <span class="tp">bool</span>   passed  <span class="op">=</span> <span class="kw">true</span>;        <span class="cmt">// true or false</span>
+    string name    <span class="op">=</span> <span class="str">"Niazi"</span>;     <span class="cmt">// text</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Name: "</span>   <span class="op">&lt;&lt;</span> name   <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Age: "</span>    <span class="op">&lt;&lt;</span> age    <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"GPA: "</span>    <span class="op">&lt;&lt;</span> gpa    <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Passed: "</span> <span class="op">&lt;&lt;</span> boolalpha <span class="op">&lt;&lt;</span> passed <span class="op">&lt;&lt;</span> endl;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">Name: Niazi<br>Age: 21<br>GPA: 3.75<br>Passed: true</div>
+          <div class="concept-grid" style="margin-top:16px">
+            <div class="concept-chip"><div class="chip-label">int</div>−2B to 2B whole numbers</div>
+            <div class="concept-chip"><div class="chip-label">float</div>~7 decimal digits</div>
+            <div class="concept-chip"><div class="chip-label">double</div>~15 decimal digits</div>
+            <div class="concept-chip"><div class="chip-label">char</div>Single character 'A'</div>
+            <div class="concept-chip"><div class="chip-label">bool</div>true or false only</div>
+            <div class="concept-chip"><div class="chip-label">string</div>Sequence of characters</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04: Input & Output -->
+    <div class="lecture-section" id="io">
+      <div class="section-header">
+        <span class="section-num">LECTURE 04</span>
+        <h2>Input & Output</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">⌨️</div>
+          <div class="card-meta">
+            <div class="card-title">cout and cin</div>
+            <div class="card-desc">Printing to screen and reading from keyboard</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation"><strong>cout</strong> (Character Output) prints data to the screen using the <code>&lt;&lt;</code> operator. <strong>cin</strong> (Character Input) reads data from the keyboard using the <code>&gt;&gt;</code> operator.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="inc">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    string name;
+    <span class="tp">int</span> age;
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Enter your name: "</span>;
+    cin  <span class="op">&gt;&gt;</span> name;
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Enter your age: "</span>;
+    cin  <span class="op">&gt;&gt;</span> age;
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Hello, "</span> <span class="op">&lt;&lt;</span> name
+         <span class="op">&lt;&lt;</span> <span class="str">"! You are "</span> <span class="op">&lt;&lt;</span> age <span class="op">&lt;&lt;</span> <span class="str">" years old."</span> <span class="op">&lt;&lt;</span> endl;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Sample Run</div>
+          <div class="output-box">Enter your name: Niazi<br>Enter your age: 22<br>Hello, Niazi! You are 22 years old.</div>
+          <div class="tip-box"><strong>💡 Tip:</strong> Use <code>getline(cin, variable)</code> to read a full sentence with spaces instead of just one word.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05: Operators -->
+    <div class="lecture-section" id="operators">
+      <div class="section-header">
+        <span class="section-num">LECTURE 05</span>
+        <h2>Operators</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">➕</div>
+          <div class="card-meta">
+            <div class="card-title">Arithmetic, Relational & Logical</div>
+            <div class="card-desc">All operator types with examples</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span> a <span class="op">=</span> <span class="num">10</span>, b <span class="op">=</span> <span class="num">3</span>;
+
+    <span class="cmt">// ── Arithmetic Operators ──</span>
+    cout <span class="op">&lt;&lt;</span> a <span class="op">+</span> b  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 13  (Addition)</span>
+    cout <span class="op">&lt;&lt;</span> a <span class="op">-</span> b  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 7   (Subtraction)</span>
+    cout <span class="op">&lt;&lt;</span> a <span class="op">*</span> b  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 30  (Multiplication)</span>
+    cout <span class="op">&lt;&lt;</span> a <span class="op">/</span> b  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 3   (Integer division)</span>
+    cout <span class="op">&lt;&lt;</span> a <span class="op">%</span> b  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1   (Modulo / remainder)</span>
+
+    <span class="cmt">// ── Relational Operators ──</span>
+    cout <span class="op">&lt;&lt;</span> (a <span class="op">></span> b)  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1 (true)</span>
+    cout <span class="op">&lt;&lt;</span> (a <span class="op">==</span> b) <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 0 (false)</span>
+    cout <span class="op">&lt;&lt;</span> (a <span class="op">!=</span> b) <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1 (true)</span>
+
+    <span class="cmt">// ── Logical Operators ──</span>
+    cout <span class="op">&lt;&lt;</span> (a<span class="op">></span><span class="num">5</span> <span class="op">&&</span> b<span class="op">&lt;</span><span class="num">5</span>)  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1 (AND: both true)</span>
+    cout <span class="op">&lt;&lt;</span> (a<span class="op">&lt;</span><span class="num">5</span> <span class="op">||</span> b<span class="op">&lt;</span><span class="num">5</span>)  <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1 (OR: one is true)</span>
+    cout <span class="op">&lt;&lt;</span> <span class="op">!</span>(a<span class="op">==</span>b)            <span class="op">&lt;&lt;</span> endl; <span class="cmt">// 1 (NOT)</span>
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06: Conditions -->
+    <div class="lecture-section" id="conditions">
+      <div class="section-header">
+        <span class="section-num">LECTURE 06</span>
+        <h2>Conditions — if / else</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🔀</div>
+          <div class="card-meta">
+            <div class="card-title">if, else if, else</div>
+            <div class="card-desc">Making decisions in your program</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">Conditional statements let your program make decisions. The code inside an <strong>if</strong> block only runs when the condition is <strong>true</strong>.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span> marks;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Enter your marks: "</span>;
+    cin  <span class="op">&gt;&gt;</span> marks;
+
+    <span class="kw">if</span> (marks <span class="op">>=</span> <span class="num">90</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Grade: A+"</span> <span class="op">&lt;&lt;</span> endl;
+    } <span class="kw">else if</span> (marks <span class="op">>=</span> <span class="num">80</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Grade: A"</span> <span class="op">&lt;&lt;</span> endl;
+    } <span class="kw">else if</span> (marks <span class="op">>=</span> <span class="num">70</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Grade: B"</span> <span class="op">&lt;&lt;</span> endl;
+    } <span class="kw">else if</span> (marks <span class="op">>=</span> <span class="num">50</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Grade: C"</span> <span class="op">&lt;&lt;</span> endl;
+    } <span class="kw">else</span> {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Grade: Fail"</span> <span class="op">&lt;&lt;</span> endl;
+    }
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Sample Run (marks = 85)</div>
+          <div class="output-box">Enter your marks: 85<br>Grade: A</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07: Switch -->
+    <div class="lecture-section" id="switch">
+      <div class="section-header">
+        <span class="section-num">LECTURE 07</span>
+        <h2>Switch Statement</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🎛️</div>
+          <div class="card-meta">
+            <div class="card-title">switch / case / break / default</div>
+            <div class="card-desc">Cleaner multi-branch decisions</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation"><strong>switch</strong> is cleaner than many if-else chains when you're comparing one variable against multiple fixed values.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span> day;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Enter day number (1-7): "</span>;
+    cin  <span class="op">&gt;&gt;</span> day;
+
+    <span class="kw">switch</span> (day) {
+        <span class="kw">case</span> <span class="num">1</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Monday"</span>;    <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">2</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Tuesday"</span>;   <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">3</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Wednesday"</span>; <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">4</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Thursday"</span>;  <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">5</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Friday"</span>;    <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">6</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Saturday"</span>;  <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="num">7</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Sunday"</span>;    <span class="kw">break</span>;
+        <span class="kw">default</span>: cout <span class="op">&lt;&lt;</span> <span class="str">"Invalid!"</span>;
+    }
+
+    cout <span class="op">&lt;&lt;</span> endl;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="tip-box"><strong>⚠️ Important:</strong> Always add <code>break;</code> after each case, or execution will "fall through" to the next case.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08: Loops -->
+    <div class="lecture-section" id="loops">
+      <div class="section-header">
+        <span class="section-num">LECTURE 08</span>
+        <h2>Loops</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🔄</div>
+          <div class="card-meta">
+            <div class="card-title">for Loop</div>
+            <div class="card-desc">Repeat a fixed number of times</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">The <strong>for</strong> loop is best when you know exactly how many times you want to repeat something. It has 3 parts: <strong>init</strong>, <strong>condition</strong>, and <strong>update</strong>.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cmt">// Print numbers 1 to 5</span>
+    <span class="kw">for</span> (<span class="tp">int</span> i <span class="op">=</span> <span class="num">1</span>; i <span class="op">&lt;=</span> <span class="num">5</span>; i<span class="op">++</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Iteration "</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> endl;
+    }
+
+    <span class="cmt">// Multiplication table of 3</span>
+    cout <span class="op">&lt;&lt;</span> <span class="str">"\nTable of 3:"</span> <span class="op">&lt;&lt;</span> endl;
+    <span class="kw">for</span> (<span class="tp">int</span> i <span class="op">=</span> <span class="num">1</span>; i <span class="op">&lt;=</span> <span class="num">10</span>; i<span class="op">++</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"3 x "</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="str">" = "</span> <span class="op">&lt;&lt;</span> <span class="num">3</span><span class="op">*</span>i <span class="op">&lt;&lt;</span> endl;
+    }
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🔁</div>
+          <div class="card-meta">
+            <div class="card-title">while & do-while Loops</div>
+            <div class="card-desc">Repeat while a condition is true</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cmt">// while loop — checks BEFORE executing</span>
+    <span class="tp">int</span> count <span class="op">=</span> <span class="num">1</span>;
+    <span class="kw">while</span> (count <span class="op">&lt;=</span> <span class="num">3</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"while: "</span> <span class="op">&lt;&lt;</span> count<span class="op">++</span> <span class="op">&lt;&lt;</span> endl;
+    }
+
+    <span class="cmt">// do-while — executes AT LEAST ONCE</span>
+    <span class="tp">int</span> n;
+    <span class="kw">do</span> {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Enter a positive number: "</span>;
+        cin <span class="op">&gt;&gt;</span> n;
+    } <span class="kw">while</span> (n <span class="op">&lt;=</span> <span class="num">0</span>);
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"You entered: "</span> <span class="op">&lt;&lt;</span> n <span class="op">&lt;&lt;</span> endl;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="tip-box"><strong>💡 Rule:</strong> Use <strong>for</strong> when count is known. Use <strong>while</strong> when count depends on a condition. Use <strong>do-while</strong> when you need at least one execution.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09: Functions -->
+    <div class="lecture-section" id="functions">
+      <div class="section-header">
+        <span class="section-num">LECTURE 09</span>
+        <h2>Functions</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">⚙️</div>
+          <div class="card-meta">
+            <div class="card-title">Defining & Calling Functions</div>
+            <div class="card-desc">Parameters, return types, and reusable code</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">A <strong>function</strong> is a reusable block of code with a name. Functions help you avoid repetition and organize your code into logical pieces.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="cmt">// Function with no parameters and no return</span>
+<span class="tp">void</span> <span class="fn">greet</span>() {
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Hello from Niazi's C++ Course!"</span> <span class="op">&lt;&lt;</span> endl;
+}
+
+<span class="cmt">// Function with parameters and return value</span>
+<span class="tp">int</span> <span class="fn">add</span>(<span class="tp">int</span> a, <span class="tp">int</span> b) {
+    <span class="kw">return</span> a <span class="op">+</span> b;
+}
+
+<span class="cmt">// Function to check if a number is even</span>
+<span class="tp">bool</span> <span class="fn">isEven</span>(<span class="tp">int</span> n) {
+    <span class="kw">return</span> (n <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="fn">greet</span>();
+
+    <span class="tp">int</span> sum <span class="op">=</span> <span class="fn">add</span>(<span class="num">7</span>, <span class="num">3</span>);
+    cout <span class="op">&lt;&lt;</span> <span class="str">"7 + 3 = "</span> <span class="op">&lt;&lt;</span> sum <span class="op">&lt;&lt;</span> endl;
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"10 is even: "</span> <span class="op">&lt;&lt;</span> boolalpha <span class="op">&lt;&lt;</span> <span class="fn">isEven</span>(<span class="num">10</span>) <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"7 is even: "</span>  <span class="op">&lt;&lt;</span> boolalpha <span class="op">&lt;&lt;</span> <span class="fn">isEven</span>(<span class="num">7</span>)  <span class="op">&lt;&lt;</span> endl;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">Hello from Niazi's C++ Course!<br>7 + 3 = 10<br>10 is even: true<br>7 is even: false</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10: Arrays -->
+    <div class="lecture-section" id="arrays">
+      <div class="section-header">
+        <span class="section-num">LECTURE 10</span>
+        <h2>Arrays</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🗂️</div>
+          <div class="card-meta">
+            <div class="card-title">1D Arrays — Basics</div>
+            <div class="card-desc">Declaring, initializing, and accessing arrays</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">An <strong>array</strong> is a collection of variables of the <strong>same type</strong> stored in consecutive memory locations. Instead of declaring 100 separate variables, you use one array.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cmt">// Declare array of 5 integers</span>
+    <span class="tp">int</span> scores[<span class="num">5</span>] <span class="op">=</span> {<span class="num">90</span>, <span class="num">85</span>, <span class="num">78</span>, <span class="num">92</span>, <span class="num">88</span>};
+
+    <span class="cmt">// Access individual elements (index starts at 0)</span>
+    cout <span class="op">&lt;&lt;</span> <span class="str">"First score:  "</span> <span class="op">&lt;&lt;</span> scores[<span class="num">0</span>] <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Third score:  "</span> <span class="op">&lt;&lt;</span> scores[<span class="num">2</span>] <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Last score:   "</span> <span class="op">&lt;&lt;</span> scores[<span class="num">4</span>] <span class="op">&lt;&lt;</span> endl;
+
+    <span class="cmt">// Print all elements using for loop</span>
+    cout <span class="op">&lt;&lt;</span> <span class="str">"\nAll scores:"</span> <span class="op">&lt;&lt;</span> endl;
+    <span class="kw">for</span> (<span class="tp">int</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> <span class="num">5</span>; i<span class="op">++</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"scores["</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="str">"] = "</span> <span class="op">&lt;&lt;</span> scores[i] <span class="op">&lt;&lt;</span> endl;
+    }
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">First score:  90<br>Third score:  78<br>Last score:   88<br><br>All scores:<br>scores[0] = 90<br>scores[1] = 85<br>scores[2] = 78<br>scores[3] = 92<br>scores[4] = 88</div>
+        </div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">📊</div>
+          <div class="card-meta">
+            <div class="card-title">Array Operations</div>
+            <div class="card-desc">Sum, average, min, max using arrays</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span> nums[<span class="num">6</span>] <span class="op">=</span> {<span class="num">12</span>, <span class="num">45</span>, <span class="num">7</span>, <span class="num">89</span>, <span class="num">3</span>, <span class="num">56</span>};
+    <span class="tp">int</span> size <span class="op">=</span> <span class="num">6</span>;
+
+    <span class="tp">int</span> sum <span class="op">=</span> <span class="num">0</span>, minVal <span class="op">=</span> nums[<span class="num">0</span>], maxVal <span class="op">=</span> nums[<span class="num">0</span>];
+
+    <span class="kw">for</span> (<span class="tp">int</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> size; i<span class="op">++</span>) {
+        sum <span class="op">+=</span> nums[i];
+        <span class="kw">if</span> (nums[i] <span class="op">&lt;</span> minVal) minVal <span class="op">=</span> nums[i];
+        <span class="kw">if</span> (nums[i] <span class="op">></span> maxVal) maxVal <span class="op">=</span> nums[i];
+    }
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Sum:     "</span> <span class="op">&lt;&lt;</span> sum <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Average: "</span> <span class="op">&lt;&lt;</span> (<span class="tp">double</span>)sum<span class="op">/</span>size <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Minimum: "</span> <span class="op">&lt;&lt;</span> minVal <span class="op">&lt;&lt;</span> endl;
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Maximum: "</span> <span class="op">&lt;&lt;</span> maxVal <span class="op">&lt;&lt;</span> endl;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">Sum:     212<br>Average: 35.3333<br>Minimum: 3<br>Maximum: 89</div>
+        </div>
+      </div>
+
+      <div class="lecture-card">
+        <div class="card-header" onclick="toggle(this)">
+          <div class="card-icon">🧮</div>
+          <div class="card-meta">
+            <div class="card-title">2D Arrays</div>
+            <div class="card-desc">Arrays of arrays — rows and columns</div>
+          </div>
+          <div class="card-toggle">+</div>
+        </div>
+        <div class="card-body">
+          <p class="explanation">A <strong>2D array</strong> is like a table with rows and columns. Access elements with two indices: <code>array[row][column]</code>.</p>
+          <div class="code-block">
+            <div class="lang-tag">C++</div>
+            <pre><span class="inc">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cmt">// 3x3 matrix</span>
+    <span class="tp">int</span> matrix[<span class="num">3</span>][<span class="num">3</span>] <span class="op">=</span> {
+        {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>},
+        {<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>},
+        {<span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>}
+    };
+
+    cout <span class="op">&lt;&lt;</span> <span class="str">"Matrix:"</span> <span class="op">&lt;&lt;</span> endl;
+    <span class="kw">for</span> (<span class="tp">int</span> row <span class="op">=</span> <span class="num">0</span>; row <span class="op">&lt;</span> <span class="num">3</span>; row<span class="op">++</span>) {
+        <span class="kw">for</span> (<span class="tp">int</span> col <span class="op">=</span> <span class="num">0</span>; col <span class="op">&lt;</span> <span class="num">3</span>; col<span class="op">++</span>) {
+            cout <span class="op">&lt;&lt;</span> matrix[row][col] <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+        }
+        cout <span class="op">&lt;&lt;</span> endl;
+    }
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+          </div>
+          <div class="output-label">Output</div>
+          <div class="output-box">Matrix:<br>1 2 3<br>4 5 6<br>7 8 9</div>
+          <div class="tip-box"><strong>💡 Real-world use:</strong> 2D arrays are used for game boards, image pixels, spreadsheets, and mathematical matrices.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <!-- ── RIGHT PANEL ── -->
+  <aside class="right-panel">
+
+    <!-- Topics Explored Progress -->
+    <div class="panel-section">
+      <div class="panel-title">Topics Explored</div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="explore-pct">0 / 10</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="explore-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Topics -->
+    <div class="panel-section">
+      <div class="panel-title">Core Topics</div>
+      <div class="core-topic" data-topic="intro"><div class="ct-dot"></div>Introduction to C++</div>
+      <div class="core-topic" data-topic="structure"><div class="ct-dot"></div>Program Structure</div>
+      <div class="core-topic" data-topic="variables"><div class="ct-dot"></div>Variables & Data Types</div>
+      <div class="core-topic" data-topic="io"><div class="ct-dot"></div>Input & Output</div>
+      <div class="core-topic" data-topic="operators"><div class="ct-dot"></div>Operators</div>
+      <div class="core-topic" data-topic="conditions"><div class="ct-dot"></div>Conditions (if/else)</div>
+      <div class="core-topic" data-topic="switch"><div class="ct-dot"></div>Switch Statement</div>
+      <div class="core-topic" data-topic="loops"><div class="ct-dot"></div>Loops</div>
+      <div class="core-topic" data-topic="functions"><div class="ct-dot"></div>Functions</div>
+      <div class="core-topic" data-topic="arrays"><div class="ct-dot"></div>Arrays</div>
+    </div>
+
+    <!-- Read Topics -->
+    <div class="panel-section">
+      <div class="panel-title">Mark as Read</div>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Introduction to C++</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Program Structure</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Variables & Data Types</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Input & Output</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Operators</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Conditions (if/else)</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Switch Statement</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Loops</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Functions</span>
+      </label>
+      <label class="read-item" onclick="toggleRead(this)">
+        <div class="read-cb"></div><span>Arrays</span>
+      </label>
+    </div>
+
+    <!-- Exam Checklist -->
+    <div class="panel-section">
+      <div class="panel-title">Exam Checklist</div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>Know basic syntax & structure</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>Data types & variables</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>cin / cout usage</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>All operator types</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>if / else if / else logic</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>switch & break rules</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>for / while / do-while</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>Functions & return types</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>1D arrays & indexing</span>
+      </div>
+      <div class="exam-item" onclick="toggleExam(this)">
+        <div class="exam-cb"></div><span>2D arrays & nested loops</span>
+      </div>
+    </div>
+
+  </aside>
+  </div><!-- /content-wrapper -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-left">
+      // C++ Complete Course &nbsp;·&nbsp; Developed by <span>Bilal Ahmad Niazi</span> &nbsp;·&nbsp; CS Student, IIUI
+    </div>
+    <div class="footer-right">
+      10 Lectures &nbsp;·&nbsp; Zero to Arrays
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // ── Toggle lecture cards ──
+  function toggle(header) {
+    const card = header.closest('.lecture-card');
+    card.classList.toggle('open');
+  }
+
+  // ── Read Topics ──
+  function toggleRead(el) {
+    el.classList.toggle('checked');
+    if (el.classList.contains('checked')) {
+      el.querySelector('.read-cb').textContent = '✓';
+    } else {
+      el.querySelector('.read-cb').textContent = '';
+    }
+    updateProgress();
+  }
+
+  // ── Exam Checklist ──
+  function toggleExam(el) {
+    el.classList.toggle('checked');
+    if (el.classList.contains('checked')) {
+      el.querySelector('.exam-cb').textContent = '✓';
+    } else {
+      el.querySelector('.exam-cb').textContent = '';
+    }
+  }
+
+  // ── Progress bar (based on read items) ──
+  function updateProgress() {
+    const total = document.querySelectorAll('.read-item').length;
+    const done = document.querySelectorAll('.read-item.checked').length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('explore-bar').style.width = pct + '%';
+    document.getElementById('explore-pct').textContent = done + ' / ' + total;
+
+    // Update core topics to match read state
+    const readItems = document.querySelectorAll('.read-item');
+    const coreTopics = document.querySelectorAll('.core-topic');
+    readItems.forEach((item, i) => {
+      if (coreTopics[i]) {
+        coreTopics[i].classList.toggle('done', item.classList.contains('checked'));
+      }
+    });
+  }
+
+  // ── Active nav on scroll ──
+  const sections = document.querySelectorAll('.lecture-section');
+  const navItems = document.querySelectorAll('.nav-item');
+  const coreTopics = document.querySelectorAll('.core-topic');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 140) current = sec.id;
+    });
+    navItems.forEach(item => {
+      item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
